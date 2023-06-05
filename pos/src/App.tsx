@@ -11,7 +11,6 @@ function App() {
         <Route path='/' element={<Customers />} />
       </Routes>
     </BrowserRouter>
-    // <Customers />
   );
 }
 
