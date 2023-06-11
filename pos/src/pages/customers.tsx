@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { DeleteOutlined } from '@ant-design/icons';
+import UpdateCustomer from './subPages/updateCustomer';
 
 interface DataType {
     _id: string;
@@ -14,6 +15,8 @@ interface DataType {
 
 export default function Customers() {
     const [customerDate, setCustomerDate] = useState<DataType[] | undefined>(undefined);
+    const [showUpdateCustomer, setShowUpdateCustomer] = useState(false);
+    const [updatingCustomerData, setUpdatingCustomerData] = useState<DataType | undefined>(undefined);
 
     const columns: ColumnsType<DataType> = [
         {
@@ -27,7 +30,7 @@ export default function Customers() {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <a>Invite {record.name}</a>
+                    <span onClick={() => showUpdateCustomerView(record)} style={{ color: "grey", cursor: "pointer" }}>Update</span>
                     <span><DeleteOutlined onClick={() => deleteCustomer(record)} style={{ color: "red" }} /></span>
                 </Space>
             ),
@@ -49,10 +52,23 @@ export default function Customers() {
             .catch((error) => console.log(error))
     }
 
+    const showUpdateCustomerView = (record: DataType) => {
+        setUpdatingCustomerData(record);
+        setShowUpdateCustomer(true);
+    }
+
     return (
         <div className='container'>
-            <div className='createButton'><Link to='/create'><Button type='primary'>Create new customer</Button> </Link></div>
-            <Table columns={columns} dataSource={customerDate} rowKey={(record) => record._id} />
+            {showUpdateCustomer ?
+                <div>
+                    <UpdateCustomer data={updatingCustomerData} showUpdateForm={setShowUpdateCustomer} loadCustomers={getCustomers} />
+                </div>
+                :
+                <div>
+                    <div className='createButton'><Link to='/create'><Button type='primary'>Create new customer</Button> </Link></div>
+                    <Table columns={columns} dataSource={customerDate} rowKey={(record) => record._id} />
+                </div>
+            }
         </div>
     )
 }
