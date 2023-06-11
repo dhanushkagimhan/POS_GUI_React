@@ -1,9 +1,10 @@
 
-import { Space, Table } from 'antd';
+import { Button, Space, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import './customer.scss'
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 interface DataType {
     _id: string;
@@ -34,7 +35,6 @@ export default function Customers() {
 
     const getCustomers = async () => {
         const { data } = await axios.get('http://localhost:9090/customer/');
-        console.log(data.customers)
         setCustomerDate(data.customers)
     }
 
@@ -44,7 +44,8 @@ export default function Customers() {
 
     return (
         <div className='container'>
-            <Table columns={columns} dataSource={customerDate} />
+            <div className='createButton'><Link to='/create'><Button type='primary'>Create new customer</Button> </Link></div>
+            <Table columns={columns} dataSource={customerDate} rowKey={(record) => record._id} />
         </div>
     )
 }
